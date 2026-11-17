@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipo PWA educativa offline</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f3f5f7;color:#202733}
+header{background:#18324b;color:white;padding:18px 22px}main{max-width:900px;margin:22px auto;padding:0 16px}
+.panel{background:white;border:1px solid #ccd4dc;border-radius:10px;padding:18px;margin:14px 0}
+button{padding:10px 14px;margin:5px;border:0;border-radius:6px;background:#245b82;color:white;cursor:pointer}
+button.secondary{background:#566575}.status{padding:10px;background:#e8f2eb;border-radius:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.item{border:1px solid #d7dde3;padding:12px;border-radius:8px}
+small{color:#566575}.bar{height:10px;background:#e2e8ee;border-radius:6px;overflow:hidden}.bar span{display:block;height:100%;width:45%;background:#4d8b67}
+</style></head><body>
+<header><h1>EduHíbrida</h1><div>Acceso a contenidos educativos con conectividad limitada</div></header>
+<main>
+<div class="panel"><b>Estado de conexión:</b> <span id="net">Conectado (modo demostración)</span><br>
+<button onclick="toggleNet()">Simular pérdida / recuperación de Internet</button>
+<p class="status" id="msg">Los contenidos prioritarios están disponibles localmente.</p></div>
+<div class="panel"><h2>Biblioteca descargada</h2><div class="grid">
+<div class="item"><b>Matemáticas básicas</b><p><small>PDF · 8 MB · Disponible sin conexión</small></p><button onclick="openContent('Matemáticas básicas')">Abrir recurso</button></div>
+<div class="item"><b>Ciencias naturales</b><p><small>PDF · 12 MB · Disponible sin conexión</small></p><button onclick="openContent('Ciencias naturales')">Abrir recurso</button></div>
+<div class="item"><b>Lectura y comprensión</b><p><small>Actividad · 2 MB · Disponible sin conexión</small></p><button onclick="openContent('Lectura y comprensión')">Abrir recurso</button></div>
+</div><p id="content"></p></div>
+<div class="panel"><h2>Avance del estudiante</h2><p>Actividad completada: <b id="count">0</b></p>
+<button onclick="saveProgress()">Registrar avance local</button>
+<button class="secondary" onclick="syncNow()">Intentar sincronizar</button>
+<p id="syncmsg" class="status">No hay cambios nuevos pendientes.</p></div>
+<div class="panel"><h2>Almacenamiento local (representación)</h2><p>29 GB utilizados de 64 GB</p><div class="bar"><span></span></div><small>Valor ilustrativo de la simulación; no corresponde a un servidor físico conectado.</small></div>
+<footer><small>Prototipo de baja fidelidad para evaluación académica. La interfaz simula flujos; no autentica usuarios ni transmite datos a un servidor real.</small></footer>
+</main>
+<script>
+let online=true, pending=0, count=0;
+function toggleNet(){online=!online;document.getElementById('net').textContent=online?'Conectado':'Sin Internet';document.getElementById('msg').textContent=online?'Conectividad recuperada. La cola puede sincronizarse.':'Modo offline activo: los recursos descargados siguen disponibles.';}
+function openContent(n){document.getElementById('content').textContent='Recurso abierto: '+n+'. En el prototipo, el contenido se representa como almacenado localmente.';}
+function saveProgress(){count++;pending++;document.getElementById('count').textContent=count;document.getElementById('syncmsg').textContent='Avance guardado localmente. Cambios pendientes: '+pending;}
+function syncNow(){let s=document.getElementById('syncmsg');if(!online){s.textContent='Sin conexión: los cambios permanecen en cola local.';}else if(pending===0){s.textContent='No existen cambios pendientes.';}else{s.textContent=pending+' cambio(s) marcado(s) como sincronizado(s) en la simulación.';pending=0;}}
+</script></body></html>
